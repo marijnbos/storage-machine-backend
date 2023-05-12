@@ -5,6 +5,7 @@ open Giraffe
 open Microsoft.AspNetCore.Http
 open Thoth.Json.Net
 open Thoth.Json.Giraffe
+//stock is application layer
 open Stock
 
 /// An overview of all bins currently stored in the Storage Machine.
@@ -26,7 +27,8 @@ let stockOverview (next: HttpFunc) (ctx: HttpContext) =
 /// An overview of all products stored in the Storage Machine, regardless what bins contain them.
 let productsInStock (next: HttpFunc) (ctx: HttpContext) =
     task {
-        let productsOverview = Stock.productsInStock (failwith "Exercise 0: fill this in to complete this HTTP handler.")
+        let dataAccess = ctx.GetService<IStockDataAccess> ()
+        let productsOverview = Stock.productsInStock dataAccess
         return! ThothSerializer.RespondJson productsOverview Serialization.encoderProductsOverview next ctx 
     }
 

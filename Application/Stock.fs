@@ -10,6 +10,7 @@ type IStockDataAccess =
 
     /// Retrieve all bins currently stored in the Storage Machine.
     abstract RetrieveAllBins : unit -> List<Bin>
+    
 
 /// An overview of all bins currently stored in the Storage Machine.
 let binOverview (dataAccess : IStockDataAccess) : List<Bin> =
@@ -29,8 +30,14 @@ let stockOverview (dataAccess : IStockDataAccess) : List<Bin> =
 type ProductsOverview = Set<Product * Quantity>
 
 /// An overview of all products stored in the Storage Machine, regardless what bins contain them.
-let productsInStock ``what parameters are needed here?`` : ProductsOverview =
+let productsInStock (databaseAccess : IStockDataAccess)  : ProductsOverview =
+    
     // Use the model
-    let products = Stock.allProducts (failwith "Exercise 0: Fill this in.")
+    let products = Stock.allProducts(stockOverview databaseAccess)
     products
-    |> failwith "Exercise 0: Complete this implementation."
+    |> totalQuantity
+    |> Map.toList
+    |> Set.ofList
+    
+    
+        
